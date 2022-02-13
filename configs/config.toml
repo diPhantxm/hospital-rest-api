@@ -1,0 +1,7 @@
+
+port = ":8000"
+address = "localhost"
+log_level = "debug"
+
+[storage]
+data_source_name = "apiserver:1e2w3d4r@192.168.0.179:3306/MSSQLSERVER?database=hospital-rest-api"
