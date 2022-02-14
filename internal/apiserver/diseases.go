@@ -3,6 +3,7 @@ package apiserver
 import (
 	"net/http"
 
+	"github.com/diphantxm/hospital-rest-api/internal/storage/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -79,6 +80,44 @@ func (a *api) GetAllDiseasesByName(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, diseases)
+}
+
+func (a *api) EditDisease(ctx *gin.Context) {
+	disease := models.NewDisease()
+
+	ctx.BindJSON(&disease)
+
+	disease, err := a.storage.Disease().Edit(disease)
+	if err != nil {
+		errorAbort(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, disease)
+}
+
+func (a *api) DischargeById(ctx *gin.Context) {
+	id, err := getId(ctx)
+	if err != nil {
+		errorAbort(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	disease, err := a.storage.Disease().FindById(id)
+	if err != nil {
+		errorAbort(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	disease.Discharged = true
+
+	disease, err = a.storage.Disease().Edit(disease)
+	if err != nil {
+		errorAbort(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, disease)
 }
 
 func (a *api) DeleteDiseaseById(ctx *gin.Context) {

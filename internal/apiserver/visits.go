@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/diphantxm/hospital-rest-api/internal/storage/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -125,6 +126,20 @@ func (a *api) GetAllVisitsByDate(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, visits)
+}
+
+func (a *api) EditVisit(ctx *gin.Context) {
+	visit := models.NewVisit()
+
+	ctx.BindJSON(&visit)
+
+	visit, err := a.storage.Visit().Edit(visit)
+	if err != nil {
+		errorAbort(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, visit)
 }
 
 func (a *api) DeleteVisitById(ctx *gin.Context) {

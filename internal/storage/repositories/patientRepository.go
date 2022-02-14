@@ -73,3 +73,20 @@ func (repo *PatientRepository) FindById(id int) (*models.Patient, error) {
 
 	return patient, nil
 }
+
+func (repo *PatientRepository) Edit(patient *models.Patient) (*models.Patient, error) {
+	newPatient := models.NewPatient()
+
+	err := repo.storage.db.QueryRow(
+		`UPDATE [hospital-rest-api].[dbo].[patients]
+		SET firstName=@p1, lastName=@p2, birthDate=@p3, residence=@p4
+		WHERE id=@p5`,
+		patient.FirstName, patient.LastName, patient.BirthDate, patient.Residence, patient.Id,
+	).Scan(&newPatient.Id, &newPatient.FirstName, &newPatient.LastName, &newPatient.BirthDate, &newPatient.Residence)
+
+	if err != nil {
+		return patient, err
+	}
+
+	return newPatient, nil
+}

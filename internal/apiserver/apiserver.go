@@ -59,6 +59,7 @@ func (a *api) ConfigureRoutes() error {
 				doctors.GET("/", a.GetAllDoctors)
 				doctors.GET("/:id", a.GetDoctorById)
 				doctors.GET("/specialties/:specialty", a.GetAllDoctorsBySpecialty)
+				doctors.PUT("/", a.EditDoctor)
 				doctors.DELETE("/:id", a.DeleteDoctorById)
 			}
 
@@ -66,8 +67,8 @@ func (a *api) ConfigureRoutes() error {
 			{
 				patients.GET("/", a.GetAllPatients)
 				patients.GET("/:id", a.GetPatientById)
+				patients.PUT("/", a.EditPatient)
 				patients.DELETE("/:id", a.DeletePatientById)
-
 			}
 
 			diseases := v1.Group("/diseases")
@@ -76,6 +77,8 @@ func (a *api) ConfigureRoutes() error {
 				diseases.GET("/:id", a.GetDiseaseById)
 				diseases.GET("/patients/:id", a.GetAllDiseasesByPatientId)
 				diseases.GET("/diseases/:diseaseName", a.GetAllDiseasesByName) // -
+				diseases.PUT("/:id", a.DischargeById)
+				diseases.PUT("/", a.EditDisease)
 				diseases.DELETE("/:id", a.DeleteDiseaseById)
 			}
 
@@ -87,6 +90,7 @@ func (a *api) ConfigureRoutes() error {
 				visits.GET("/diseases/:id", a.GetAllVisitsByDiseaseId)
 				visits.GET("/doctors/:id", a.GetAllVisitsByDoctorId)
 				visits.GET("/date/:date", a.GetAllVisitsByDate) // -
+				visits.PUT("/", a.EditVisit)
 				visits.DELETE("/:id", a.DeleteVisitById)
 			}
 		}

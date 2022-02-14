@@ -3,5 +3,6 @@ CREATE TABLE diseases(
     diseaseName varchar(64) not null,
     treatment varchar(1024),
     startDate date not null,
+    discharged boolean,
     patientId int not null foreign key references patients(id)
 );

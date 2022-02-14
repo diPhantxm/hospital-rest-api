@@ -188,6 +188,23 @@ func (repo *VisitRepository) FindAllByDate(date time.Time) ([]models.Visit, erro
 	return visists, nil
 }
 
+func (repo *VisitRepository) Edit(visit *models.Visit) (*models.Visit, error) {
+	newVisit := models.NewVisit()
+
+	err := repo.storage.db.QueryRow(
+		`UPDATE [hospital-rest-api].[dbo].[visits]
+		SET patientId=@p1, diseaseId=@p2, doctorId=@p3, visitDate=@p4
+		WHERE id=@p5`,
+		visit.PatientId, visit.DiseaseId, visit.DoctorId, visit.Date, visit.Id,
+	).Scan(&newVisit.Id, &newVisit.PatientId, &newVisit.DiseaseId, &newVisit.DoctorId, &newVisit.Date)
+
+	if err != nil {
+		return visit, err
+	}
+
+	return newVisit, nil
+}
+
 func (repo *VisitRepository) FillFromRow(row *sql.Row) (*models.Visit, error) {
 	visit := models.NewVisit()
 	visit.Disease.Patient = nil

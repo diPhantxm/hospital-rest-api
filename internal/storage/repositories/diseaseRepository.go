@@ -126,6 +126,22 @@ func (repo *DiseaseRepository) FindAllByName(name string) ([]models.Disease, err
 	return diseases, nil
 }
 
+func (repo *DiseaseRepository) Edit(disease *models.Disease) (*models.Disease, error) {
+	row := repo.storage.db.QueryRow(
+		`UPDATE [hospital-rest-api].[dbo].[diseases]
+		SET diseaseName=@p1, treatment=@p2, startDate=@p3, patientId=@p4, discharged=@p5
+		WHERE id=@p6`,
+		disease.Name, disease.Treatment, disease.Date, disease.PatientId, disease.Discharged, disease.Id,
+	)
+
+	newDisease, err := repo.FillFromRow(row)
+	if err != nil {
+		return disease, err
+	}
+
+	return newDisease, nil
+}
+
 func (repo *DiseaseRepository) FillFromRow(diseaseRow *sql.Row) (*models.Disease, error) {
 	disease := models.NewDisease()
 	if err := diseaseRow.Scan(&disease.Id, &disease.Name, &disease.Treatment, &disease.Date,

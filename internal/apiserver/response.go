@@ -14,9 +14,9 @@ func errorAbort(ctx *gin.Context, statusCode int, message string) {
 }
 
 func emptyObject(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, gin.H{})
+	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
 func emptySlice(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, []gin.H{})
+	ctx.JSON(http.StatusNoContent, []gin.H{})
 }

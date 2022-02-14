@@ -92,3 +92,20 @@ func (repo *DoctorRepository) FindAllBySpecialty(specialty string) ([]models.Doc
 
 	return doctors, nil
 }
+
+func (repo *DoctorRepository) Edit(doctor *models.Doctor) (*models.Doctor, error) {
+	newDoctor := models.NewDoctor()
+
+	err := repo.storage.db.QueryRow(
+		`UPDATE [hospital-rest-api].[dbo].[doctors]
+		SET firstName=@p1, lastName=@p2, specialty=@p3
+		WHERE id=@p4`,
+		doctor.FirstName, doctor.LastName, doctor.Specialty, doctor.Id,
+	).Scan(&newDoctor.Id, &newDoctor.FirstName, &newDoctor.LastName, &newDoctor.Specialty)
+
+	if err != nil {
+		return doctor, err
+	}
+
+	return newDoctor, nil
+}

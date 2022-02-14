@@ -3,6 +3,7 @@ package apiserver
 import (
 	"net/http"
 
+	"github.com/diphantxm/hospital-rest-api/internal/storage/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -32,6 +33,20 @@ func (a *api) GetPatientById(ctx *gin.Context) {
 	}
 	if patient == nil {
 		emptyObject(ctx)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, patient)
+}
+
+func (a *api) EditPatient(ctx *gin.Context) {
+	patient := models.NewPatient()
+
+	ctx.BindJSON(&patient)
+
+	patient, err := a.storage.Patient().Edit(patient)
+	if err != nil {
+		errorAbort(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
 
